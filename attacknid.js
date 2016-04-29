@@ -1,5 +1,6 @@
 "use strict";
 
+
 var Cylon = require("cylon");
 var faceDetected = false;
 Cylon.robot({
