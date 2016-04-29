@@ -1,0 +1,15 @@
+{
+  "name": "opencv-attacknid",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cylon-attacknid": "github:rondagdag/cylon-attacknid",
+    "cylon-opencv": "^0.15.0"
+  }
+}
