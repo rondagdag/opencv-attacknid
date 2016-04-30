@@ -3,15 +3,16 @@
 
 var Cylon = require("cylon");
 var faceDetected = false;
+var turned = false;
 Cylon.robot({
   connections: {
-    attacknid: { adaptor: "attacknid", address : "0000000000" },
+    attacknid: { adaptor: "attacknid", address: "8C:DE:52:35:21:B7" },
     opencv: { adaptor: "opencv" }
   },
 
   devices: {
     spider: { driver: "attacknid", connection: "attacknid" },
-    window: { driver: "window", connection: "opencv" },
+    //window: { driver: "window", connection: "opencv" },
     camera: {
       driver: "camera",
       connection: "opencv",
@@ -51,17 +52,30 @@ Cylon.robot({
             faceDetected = true;
             var face = faces[0];
             console.log(face);
-            if (my.spider.ready)
+            if (my.spider.ready())
             {
-              if (face.x < 10) my.spider.turnleft();
-              else if (face.x + face.width > 110) my.spider.turnright();
+              if (face.x < 10) {
+                if (!turned) {
+                        my.spider.turnleft();
+                        turned = true;
+                }
+              }
+              else if (face.x > 100) {
+                if (!turned) {
+                        my.spider.turnright();
+                        turned = true;
+                }
+              } 
               else if (face.width > 60 && face.height > 60) 
               {
                 my.spider.fire();
                 faceDetected = false;
+                turned = false;
               }
-              else
+              else {
                 my.spider.moveforward();
+                turned = false;
+              }
             }
          }
          else
@@ -72,7 +86,7 @@ Cylon.robot({
         // as an rgb array e.g. [r,g,b].
         // Once the image has been updated with rectangles around
         // the faces detected, we display it in our window.
-        my.window.show(im, 40);
+        //my.window.show(im, 40);
 
         // After displaying the updated image we trigger another
         // frame read to ensure the fastest processing possible.
@@ -101,7 +115,7 @@ Cylon.robot({
    every((5).seconds(), function() { 
         if (!faceDetected)
         {
-            var number = Math.floor(Math.random() * 2);
+            var number = Math.random() * 2;
             if (number > 1)
               my.spider.turnright();
             else
