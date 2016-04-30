@@ -51,16 +51,18 @@ Cylon.robot({
             faceDetected = true;
             var face = faces[0];
             console.log(face);
-            if (face.x < 10) my.spider.turnleft();
-            else if (face.x > 90) my.spider.turnright();
-            
-            if (face.width > 60 && face.height > 60) 
+            if (my.spider.ready)
             {
-              my.spider.fire();
-              faceDetected = false;
+              if (face.x < 10) my.spider.turnleft();
+              else if (face.x + face.width > 110) my.spider.turnright();
+              else if (face.width > 60 && face.height > 60) 
+              {
+                my.spider.fire();
+                faceDetected = false;
+              }
+              else
+                my.spider.moveforward();
             }
-            else
-              my.spider.moveforward();   
          }
          else
          {
