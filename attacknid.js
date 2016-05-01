@@ -1,6 +1,6 @@
 "use strict";
 
-
+var cv = require('opencv');
 var Cylon = require("cylon");
 var faceDetected = false;
 var turned = false;
@@ -22,7 +22,7 @@ Cylon.robot({
   },
 
   work: function(my) {
-    
+    my.previousframe = None
     my.camera.once("cameraReady", function() {
       console.log("The camera is ready!");
 
@@ -66,7 +66,7 @@ Cylon.robot({
                         turned = true;
                 }
               } 
-              else if (face.width > 60 && face.height > 60) 
+              else if (face.width > 45 && face.height > 45) 
               {
                 my.spider.fire();
                 faceDetected = false;
@@ -102,10 +102,38 @@ Cylon.robot({
         if (err) { console.log(err); }
         //im.resize(320,240);
         im.resize(160,120);
+        
         my.camera.detectFaces(im);
-        console.log("Face Detected:" + faceDetected)
+        console.log("Face Detected:" + faceDetected)        
+        my.camera.ImageSimilarity(im);
+        
       });
+      
+      my.camera.ImageSimilarity = function(im) {
+        if (my.previousframe && !faceDetected)
+        {
+          cv.ImageSimilarity(my.previousframe, im, function (err, dissimilarity) {
+            if (err) throw err;
 
+            console.log('Dissimilarity: ', dissimilarity);
+            var number = Math.random() * 2; 
+            if (dissimilarity == 0)
+            {
+                  if (number > 1)
+                    my.spider.turnright();
+                  else
+                    my.spider.turnleft();
+            } else {
+                  if (number > 1)
+                    my.spider.moveforward();
+                  else
+                    my.spider.movebackward();
+            }
+           })
+        }
+        my.previousframe = im;
+      }
+      
       my.camera.readFrame();
     });
     
