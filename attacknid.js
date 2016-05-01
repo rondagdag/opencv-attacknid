@@ -22,7 +22,7 @@ Cylon.robot({
   },
 
   work: function(my) {
-    my.previousframe = None
+    my.previousframe = null
     my.camera.once("cameraReady", function() {
       console.log("The camera is ready!");
 
